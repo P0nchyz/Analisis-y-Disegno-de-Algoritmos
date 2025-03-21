@@ -1,6 +1,27 @@
 #include <stdlib.h>
+#include "../sort.h"
 
-void merge(int *leftArray, int sizeLeftArray, int *rightArray, int sizeRightArray, int *array, int size);
+/**
+ * @brief Merge two different arrays.
+ * 
+ * The input arrays are asumed to be both sorted and occupy
+ * a contiguous region in memory (will not return a pointer
+ * to merged arrays)
+ * 
+ * This function can only be called from withing this file
+ * (Al chile lei por ahi sobre la keyword static y la queria usar
+ * deal with it)
+ * 
+ * O(n)
+ * 
+ * @param leftArray Pointer to left side of the array
+ * @param sizeLeftArray Number of elements in the left array
+ * @param rightArray Pointer to right side of the array
+ * @param sizeRightArray Number of elements in the right array
+ * @param array Pointer to the whole array (Should be the same as leftArray, prolly bad design)
+ * @param size Size of the whole array (sizeLeftArray + sizeRightArray)
+ */
+static void merge(int *leftArray, int sizeLeftArray, int *rightArray, int sizeRightArray, int *array, int size);
 
 void merge_sort(int *array, unsigned int size)
 {

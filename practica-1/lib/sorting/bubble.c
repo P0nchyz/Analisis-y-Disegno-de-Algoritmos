@@ -1,3 +1,17 @@
+/**
+ * @file bubble.c
+ * 
+ * @brief Contains the implementation of the bubble sort algorithms.
+ * 
+ * @author Bautista Quijano Anayeli
+ * @author Garcia Morian Julio Amauri
+ * @author (TODO) Gael
+ * @author Hernandez Zamora Valeria
+ * @author Lechuga Torres Diego
+ * @author Segundo Cantero Jonathan Axel
+ * @author Vergara Gamboa Jose Alfonso
+ * @date Oct-2024 - Mar-2025
+ */
 void bubble_sort(int *array, unsigned int size)
 {
 	for (int i = 0; i < size - 1; i++) {

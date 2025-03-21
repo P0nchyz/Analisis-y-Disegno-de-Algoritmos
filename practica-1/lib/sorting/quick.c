@@ -1,4 +1,22 @@
-int findPivot(int *array, int size);
+#include "../sort.h"
+
+/**
+ * @brief Selects a pivot value and sections the array into sections with bigger and smaller sections.
+ * 
+ * Selects the value at the end of the array as the pivot, piles all elements smaller than
+ * it to one side of the array (not in order), and finds and moves the pivot to its
+ * new position.
+ * 
+ * Read note in @ref merge for use of static keyword
+ * 
+ * O(n)
+ * 
+ * @param array Pointer to integers for pivoting
+ * @param size Number of elements in the array
+ * 
+ * @return Index of the final position for the pivot
+ */
+static int findPivot(int *array, int size);
 
 void quick_sort(int *array, unsigned int size)
 {
