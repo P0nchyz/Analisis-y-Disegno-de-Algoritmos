@@ -9,7 +9,7 @@ enum SortingAlgorithm {BUBBLE, BUBBLE1, BUBBLE2, INSERTION, SELECTION, SHELL, TR
 
 typedef void (*sorting_function)(int *array, unsigned int size);
 
-void printUsage();
+void printUsage(char *programName);
 
 int getSortingAlgorithm(char *option);
 
@@ -20,19 +20,19 @@ int main(int argc, char *argv[])
 	enum SortingAlgorithm selectedAlgorithm;
 	int size;
 	if (4 != argc){
-		printUsage();
+		printUsage(argv[0]);
 		exit(1);
 	} else {
 		size = atoi(argv[1]);
 		if (0 != strcmp(argv[2], "-a")) {
 			printf("ERROR: Unknown argument %s.\n\n", argv[2]);
-			printUsage();
+			printUsage(argv[0]);
 			exit(1);
 		}
 		selectedAlgorithm = getSortingAlgorithm(argv[3]);
 		if (-1 == selectedAlgorithm) {
 			printf("ERROR: Unknown algorithm option %s.\n\n", argv[3]);
-			printUsage();
+			printUsage(argv[0]);
 			exit(1);
 		}
 	}
@@ -69,10 +69,10 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void printUsage()
+void printUsage(char *programName)
 {
 	printf("Usage:\n");
-	printf("\t./sort <size> -a <algorithm>\n");
+	printf("\t%s <size> -a <algorithm>\n", programName);
 	printf("\nList of Algorithms\n");
 	printf("\tB\tBubble Sort\n");
 	printf("\tB1\tOptimized Bubble Sort 1\n");
