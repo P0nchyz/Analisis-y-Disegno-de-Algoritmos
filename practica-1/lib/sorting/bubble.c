@@ -5,7 +5,7 @@
  * 
  * @author Bautista Quijano Anayeli
  * @author Garcia Morian Julio Amauri
- * @author (TODO) Gael
+ * @author Jimenez Rodriguez Alan Gael Gael
  * @author Hernandez Zamora Valeria
  * @author Lechuga Torres Diego
  * @author Segundo Cantero Jonathan Axel
