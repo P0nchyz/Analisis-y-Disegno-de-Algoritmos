@@ -66,6 +66,11 @@ int main(int argc, char *argv[])
 	printf("CPU/Wall   %.10f %% \n",100.0 * (utime1 - utime0 + stime1 - stime0) / (wtime1 - wtime0));
 	printf("\n");
 	//******************************************************************
+
+	FILE *outFile = fopen("out.txt", "w");
+	for (int i = 0; i < size; i++) {
+		fprintf(outFile, "%d\n", array[i]);
+	}
 	return 0;
 }
 

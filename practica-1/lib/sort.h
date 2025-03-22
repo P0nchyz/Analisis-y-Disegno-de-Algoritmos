@@ -16,8 +16,35 @@
  */
 void bubble_sort(int *array, unsigned int size);
 
+/**
+ * @brief Bubble Sort Algorithm.
+ * 
+ * Compares two elements and moves the bigger one to the right
+ * 
+ * Optimization: Makes the inside loop check fewer items as the right
+ * side gets sorted.
+ * 
+ * O(n^2)
+ * 
+ * @param array Pointer to integers to be sorted
+ * @param size Number of elements in the array
+ */
 void optimized_bubble_sort_1(int *array, unsigned int size);
 
+/**
+ * @brief Bubble Sort Algorithm.
+ * 
+ * Compares two elements and moves the bigger one to the right
+ * 
+ * Optimization: Includes optimization from @ref optimized_bubble_sort_1
+ * and has a boolean flag for checking if the array is sorted in the inside
+ * loop, preventing the possible additional iterations if the array was already sorted.
+ * 
+ * O(n^2)
+ * 
+ * @param array Pointer to integers to be sorted
+ * @param size Number of elements in the array
+ */
 void optimized_bubble_sort_2(int *array, unsigned int size);
 
 /**
