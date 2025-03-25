@@ -16,8 +16,9 @@ Beskrivning:
 Detta är ett program som fungerar som en jämförare av sorteringsalgoritmer 
 och som mäter och jämför körtiderna för varje algoritm.
 
-Compilacion: gcc main.c lib/sort.c -o main.exe
-
+Compilacion: 
+gcc -o sort.out main.c lib/tiempo.c lib/sorting/bubble.c lib/sorting/heap.c lib/sorting/insertion.c lib/sorting/merge.c lib/sorting/quick.c lib/sorting/selection.c lib/sorting/shell.c lib/sorting/tree.c
+HUEVOS JOSE.c
 Ejecucion: main.exe
 
 */
