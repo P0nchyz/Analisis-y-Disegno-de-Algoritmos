@@ -3,7 +3,7 @@ Autores:
 Bautista Quijano Anayeli
 Garcia Morlan Julio Amauri
 Hernandez Zamora Valeria (Huevos Val)
-Jimenez Alan Gael (Perdon Gael, no me se tus apellidos) 
+Jimenez Rodriguez Alan Gael (HUevos Gael ojala te atropelle un burro)
 Vergara Gamboa Jose Alfonso 
 
 VERSION: 1.0
