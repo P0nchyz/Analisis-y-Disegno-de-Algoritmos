@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall
 
 # Library files
-LIB = lib/tiempo.c lib/sorting/bubble.c lib/sorting/heap.c lib/sorting/insertion.c lib/sorting/merge.c lib/sorting/quick.c lib/sorting/selection.c lib/sorting/shell.c lib/sorting/tree.c
+LIB = lib/tiempo.c lib/BST.c lib/sorting/bubble.c lib/sorting/heap.c lib/sorting/insertion.c lib/sorting/merge.c lib/sorting/quick.c lib/sorting/selection.c lib/sorting/shell.c lib/sorting/tree.c
 
 # Output executable name
 TARGET = sort.out

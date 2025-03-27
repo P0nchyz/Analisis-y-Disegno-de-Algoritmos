@@ -4,6 +4,9 @@
  * @author José Vergara
  */
 
+#ifndef SORT_H
+#define SORT_H
+
 /**
  * @brief Bubble Sort Algorithm.
  * 
@@ -121,3 +124,5 @@ void merge_sort(int *array, unsigned int size);
 void quick_sort(int *array, unsigned int size);
 
 void heap_sort(int *array, unsigned int size);
+
+#endif
