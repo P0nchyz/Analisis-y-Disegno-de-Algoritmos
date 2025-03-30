@@ -2,9 +2,9 @@
 Autores:
 Bautista Quijano Anayeli
 Garcia Morlan Julio Amauri
-Hernandez Zamora Valeria (Huevos Val)
-Jimenez Rodriguez Alan Gael (HUevos Gael ojala te atropelle un burro)
-Vergara Gamboa Jose Alfonso 
+Hernandez Zamora Valeria
+Jimenez Rodriguez Alan Gael
+Vergara Gamboa Jose Alfonso
 
 VERSION: 1.0
 
@@ -12,14 +12,14 @@ Descripcion:
 Este es un programa que sirve de comparador de algoritmos de ordenamiento que 
 mide y compara los tiempos de ejecucion de cada uno.
 
-Beskrivning:
-Detta är ett program som fungerar som en jämförare av sorteringsalgoritmer 
-och som mäter och jämför körtiderna för varje algoritm.
+Compilacion:
+Con gcc: 
+	gcc -o sort.out main.c lib/tiempo.c lib/sorting/bubble.c lib/sorting/heap.c lib/sorting/insertion.c lib/sorting/merge.c lib/sorting/quick.c lib/sorting/selection.c lib/sorting/shell.c lib/sorting/tree.c
 
-Compilacion: 
-gcc -o sort.out main.c lib/tiempo.c lib/sorting/bubble.c lib/sorting/heap.c lib/sorting/insertion.c lib/sorting/merge.c lib/sorting/quick.c lib/sorting/selection.c lib/sorting/shell.c lib/sorting/tree.c
-HUEVOS JOSE.c
-Ejecucion: main.exe
+Con make:
+	make
+
+Ejecucion: ./sort.out
 
 */
 
@@ -66,7 +66,7 @@ Obtiene la funcion de ordenamiento asociado a un algoritmo.
 Reciobe 
 enum selectSortingAlgorithm  option
 Retorna 
-sorting_function (Sieendo este puntero a la funcion de ordenamiento correspondiente)
+sorting_function (Siendo este puntero a la funcion de ordenamiento correspondiente)
 */
 sorting_function selectSortingAlgorithm(enum SortingAlgorithm option);
 
@@ -97,8 +97,8 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		/*
-  		Determina el algoritmo de ordenamiento a usar en el programa
-  		*/
+		Determina el algoritmo de ordenamiento a usar en el programa
+		*/
 		selectedAlgorithm = getSortingAlgorithm(argv[3]);
 		/*
   		De no cumplirse la condicion (algoritmo seleccionado por el usuario es 
@@ -154,7 +154,6 @@ int main(int argc, char *argv[])
 	printf("user (Tiempo de procesamiento en CPU) %.10e s\n",  utime1 - utime0);
 	printf("sys (Tiempo en acciónes de E/S)  %.10e s\n",  stime1 - stime0);
 	printf("CPU/Wall   %.10f %% \n",100.0 * (utime1 - utime0 + stime1 - stime0) / (wtime1 - wtime0));
-	printf("Huevos Val"):
 	printf("\n");
 	//******************************************************************
 
