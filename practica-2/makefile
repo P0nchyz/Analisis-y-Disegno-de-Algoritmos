@@ -2,7 +2,7 @@
 CC = gcc
 
 # Compiler flags
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 
 # Library files
 LIB = lib/tiempo.c lib/searching/searching.c lib/searching/thread_searching.c
@@ -11,4 +11,4 @@ LIB = lib/tiempo.c lib/searching/searching.c lib/searching/thread_searching.c
 TARGET = search.out
 
 all: main.c $(LIB)
-	$(CC) -o $(TARGET) main.c $(LIB)
+	$(CC) $(CFLAGS) -o $(TARGET) main.c $(LIB)
