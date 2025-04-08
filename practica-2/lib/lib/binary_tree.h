@@ -11,9 +11,6 @@ struct Nodo {
 // Función para crear un nuevo nodo
 struct Nodo* CrearNodo(int dato);
 
-// Función para insertar un valor en el árbol binario
-void Insertar(struct Nodo** raiz, int dato);
-
 // Función para buscar un valor en el árbol binario
 bool Encontrado(struct Nodo* raiz, int dato);
 
