@@ -18,7 +18,7 @@ int binary_search(int *array, unsigned int size, int target)
 		if (array[middle] == target)
 			return middle;
 		
-		if (array[middle] > target)
+		if (target > array[middle])
 			lower = middle + 1;
 		else
 			higher = middle - 1;
