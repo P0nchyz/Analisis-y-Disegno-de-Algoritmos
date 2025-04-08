@@ -58,14 +58,14 @@ static void *t_binary_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
 	int lower = search->start;
-	int higher = search->end - 1;
+	int higher = search->end;
 	while (higher >= lower) {
 		if (*(search->index) != -1)
 			return NULL;
 		int middle = lower + (higher - lower) / 2;
 		int middleValue = search->array[middle];
 		if (middleValue == search->target) {
-			search->index = middle;
+			*(search->index) = middle;
 			return NULL;
 		}
 		if (search->target > middleValue)
@@ -106,10 +106,7 @@ int thread_binary_search(int *array, unsigned int size, int target)
 static void *t_binary_tree_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
-	int *array = search->array;
-	unsigned int start = search->start;
-	unsigned int end = search->end;
-	
+	return NULL;
 }
 
 int thread_binary_tree_search(int *array, unsigned int size, int target)
@@ -142,10 +139,27 @@ int thread_binary_tree_search(int *array, unsigned int size, int target)
 static void *t_exponential_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
-	int *array = search->array;
-	unsigned int start = search->start;
-	unsigned int end = search->end;
-	
+	int internalSize = search->end - search->start;
+	int *internalArray = &(search->array[search->start]);
+	int exponentialIndex = 1;
+	while ((exponentialIndex * 2) < internalSize && internalArray[exponentialIndex] < search->target)
+		exponentialIndex *= 2;
+	int lower = exponentialIndex / 2;
+	int higher = exponentialIndex;
+	while (higher >= lower) {
+		if (*(search->index) != -1)
+			return NULL;
+		int middle = lower + (higher - lower) / 2;
+		if (internalArray[middle] == search->target) {
+			*(search->index) = search->start + middle;
+			return NULL;
+		}
+		if (search->target > internalArray[middle])
+			lower = middle + 1;
+		else
+			higher = middle - 1;
+	}
+	return NULL;
 }
 
 int thread_exponential_search(int *array, unsigned int size, int target)
@@ -178,10 +192,7 @@ int thread_exponential_search(int *array, unsigned int size, int target)
 static void *t_fibonacci_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
-	int *array = search->array;
-	unsigned int start = search->start;
-	unsigned int end = search->end;
-	
+	return NULL;
 }
 
 int thread_fibonacci_search(int *array, unsigned int size, int target)
