@@ -226,6 +226,9 @@ searching_function selectSearchingAlgorithm(enum SearchingAlgorithms option)
 	case BINARY:
 		r_func = binary_search;
 		break;
+	case BINARY_TREE:
+		r_func = binary_tree_search;
+		break;
 	case EXPONENTIAL:
 		r_func = exponential_search;
 		break;
@@ -238,6 +241,9 @@ searching_function selectSearchingAlgorithm(enum SearchingAlgorithms option)
 	case BINARY_T:
 		r_func = thread_binary_search;
 		break;
+	case BINARY_TREE_T:
+		r_func = thread_binary_tree_search;
+		break;
 	case EXPONENTIAL_T:
 		r_func = thread_exponential_search;
 		break;
@@ -245,7 +251,8 @@ searching_function selectSearchingAlgorithm(enum SearchingAlgorithms option)
 		r_func = thread_fibonacci_search;
 		break;
 	default:
-		r_func = NULL;
+		printf("\n\nERROR: selectSearchingAlgorithm() - Wrong algorithm option.\n\n");
+		exit(-1);
 		break;
 	}
 	return r_func;
