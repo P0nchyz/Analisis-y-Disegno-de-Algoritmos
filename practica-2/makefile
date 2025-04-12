@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Library files
-LIB = lib/tiempo.c lib/searching/searching.c lib/searching/thread_searching.c
+LIB = lib/tiempo.c lib/BST.c lib/searching/searching.c lib/searching/thread_searching.c
 
 # Output executable
 TARGET = search.out
