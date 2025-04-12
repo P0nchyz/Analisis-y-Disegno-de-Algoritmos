@@ -28,17 +28,7 @@ int binary_search(int *array, unsigned int size, int target)
 
 int binary_tree_search(int *array, unsigned int size, int target)
 {
-	   if (raiz == NULL) {
-        return -1;  
-    }
-    if (raiz->dato == target) {
-        return 1;  
-    }
-    if (target < raiz->dato) {
-        return binary_tree_search(raiz->izq, target);
-    } else {
-        return binary_tree_search(raiz->der, target);  
-    }
+	exit(-1);
 }
 
 int exponential_search(int *array, unsigned int size, int target)
