@@ -3,6 +3,7 @@
 #include <pthread.h>
 
 #include "../search.h"
+#include "../BST.h"
 
 #define THREAD_NUM 16
 typedef struct {
@@ -106,6 +107,15 @@ int thread_binary_search(int *array, unsigned int size, int target)
 static void *t_binary_tree_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
+	BST searchTree = createBST();
+	for (int i = search->start; i < search->end; i++)
+		searchTree = insertBST(searchTree, search->array[i], i);
+	int index = searchBST(searchTree, search->target);
+	freeBST(searchTree);
+	if (index != -1) {
+		*(search->index) = index;
+		return NULL;
+	}
 	return NULL;
 }
 
@@ -192,6 +202,47 @@ int thread_exponential_search(int *array, unsigned int size, int target)
 static void *t_fibonacci_search(void *arg)
 {
 	searchInfo *search = (searchInfo *)arg;
+	int fib_prev2 = 0;
+	int fib_prev1 = 1;
+	int fib_current = fib_prev1 + fib_prev2;
+	int size = search->end - search->start;
+
+
+	// Encuentra el menor número de Fibonacci >= size
+	while (fib_current < size) {
+		fib_prev2 = fib_prev1;
+		fib_prev1 = fib_current;
+		fib_current = fib_prev1 + fib_prev2;
+	}
+
+	int search_start = -1;
+
+	while (fib_current > 1) {
+		if (*(search->index) != -1)
+			return NULL;
+		int i = (search_start + fib_prev2 < size - 1) ? (search_start + fib_prev2) : (size - 1);
+		int index = search->start + i;
+
+		if (search->array[index] < search->target) {
+			fib_current = fib_prev1;
+			fib_prev1 = fib_prev2;
+			fib_prev2 = fib_current - fib_prev1;
+			search_start = i;
+		} else if (search->array[index] > search->target) {
+			fib_current = fib_prev2;
+			fib_prev1 = fib_prev1 - fib_prev2;
+			fib_prev2 = fib_current - fib_prev1;
+		} else {
+			*(search->index) = index;
+			return NULL;
+		}
+	}
+	// Comparar el último elemento restante
+	if (fib_prev1 && search_start + 1 < size && search->array[search->start + search_start + 1] == search->target) {
+		*(search->index) = search->start + search_start + 1;
+		return NULL;
+	}
+
 	return NULL;
 }
 

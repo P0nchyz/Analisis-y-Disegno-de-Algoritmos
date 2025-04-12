@@ -15,4 +15,7 @@ BST createBST(void);
 BST insertBST(BST tree, int value, int index);
 
 int searchBST(BST tree, int value);
+
+void freeBST(BST tree);
+
 #endif

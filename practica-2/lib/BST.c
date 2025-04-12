@@ -36,3 +36,12 @@ int searchBST(BST tree, int value)
 		return searchBST(tree->bigLeaf, value);
 	return searchBST(tree->smallLeaf, value);
 }
+
+void freeBST(BST tree)
+{
+	if (tree == NULL)
+		return;
+	freeBST(tree->smallLeaf);
+	freeBST(tree->bigLeaf);
+	free(tree);
+}

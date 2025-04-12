@@ -32,7 +32,9 @@ int binary_tree_search(int *array, unsigned int size, int target)
 	BST searchTree = createBST();
 	for (int i = 0; i < size; i++)
 		searchTree = insertBST(searchTree, array[i], i);
-	return searchBST(searchTree, target);
+	int index = searchBST(searchTree, target);
+	freeBST(searchTree);
+	return index;
 
 }
 
