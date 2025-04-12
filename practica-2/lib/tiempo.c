@@ -35,9 +35,9 @@ void uswtime(double *usertime, double *systime, double *walltime)
 	struct timezone tzp;
 	getrusage(RUSAGE_SELF, &buffer);
 	gettimeofday(&tp, &tzp);
-	*usertime = (double) buffer.ru_utime.tv_sec +1.0e-6 * buffer.ru_utime.tv_usec;
-	*systime  = (double) buffer.ru_stime.tv_sec +1.0e-6 * buffer.ru_stime.tv_usec;
-	*walltime = (double) tp.tv_sec + 1.0e-6 * tp.tv_usec; 
+	*usertime = (double) buffer.ru_utime.tv_sec +mega * buffer.ru_utime.tv_usec;
+	*systime  = (double) buffer.ru_stime.tv_sec +mega * buffer.ru_stime.tv_usec;
+	*walltime = (double) tp.tv_sec + mega * tp.tv_usec; 
 }
 
 /*En Unix, se dispone de temporizadores ejecutables (en concreto time) que nos proporcionan medidas de los tiempos
