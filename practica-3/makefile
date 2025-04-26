@@ -2,13 +2,13 @@
 CC = gcc
 
 # Compiler flags
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 
 # Library files
-LIB = 
+LIB = huffman.c
 
 # Output executable name
 TARGET = huffman.out
 
 all: main.c $(LIB)
-	$(CC) -o $(TARGET) $(CGLAGS) main.c $(LIB)
+	$(CC) -o $(TARGET) $(CFLAGS) main.c $(LIB)
