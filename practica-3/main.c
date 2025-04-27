@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "huffman.h"
-#include "binary.h"
+#include "lib/huffman.h"
+#include "lib/binary.h"
 
 Arbol *get_frequencies(FILE *file, bool isExplicit, int *size);
 void quick_sort(Arbol *array, unsigned int size);
@@ -37,7 +37,7 @@ void compressFile(char *fileName)
 	int numNodos;
 	Arbol *nodos = get_frequencies(file, false, &numNodos);
 
-	FILE *freqFile = fopen("frequencias.txt", "w");
+	FILE *freqFile = fopen("./out/frequencias.txt", "w");
 	for (int i = 0; i < numNodos; i++) {
 		if (isprint(nodos[i]->c)) {
 			fprintf(freqFile, "'%c'--%d\n", nodos[i]->c, nodos[i]->f);
@@ -52,7 +52,7 @@ void compressFile(char *fileName)
 	Code *table = Obtener_Tabla(finalTree, numNodos);
 	printTable(table, numNodos);
 
-	FILE *newFile = fopen("codificacion.dat", "w");
+	FILE *newFile = fopen("./out/codificacion.dat", "w");
 	uint8_t buffer;
 	rewind(file);
 	uint8_t out = 0;
@@ -97,10 +97,9 @@ void uncompressFile(char *fileName, char *freqFileName)
 	Code *table = Obtener_Tabla(finalTree, numNodos);
 	printTable(table, numNodos);
 
-	FILE *compFile = fopen("codificacion.dat", "r");
-	FILE *newFile = fopen("out.file", "w");
+	FILE *compFile = fopen("./out/codificacion.dat", "r");
+	FILE *newFile = fopen("./out/out.file", "w");
 	int bitsRead = 0;
-	int i;
 	Arbol auxArbol = finalTree;
 	uint8_t buffer;
 	fread(&buffer, sizeof(buffer), 1, compFile);

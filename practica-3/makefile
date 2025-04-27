@@ -5,10 +5,21 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Library files
-LIB = huffman.c binary.c
+LIB = lib/huffman.c lib/binary.c
 
 # Output executable name
 TARGET = huffman.out
 
-all: main.c $(LIB)
+OUT_DIR = out
+
+all: $(TARGET) $(OUT_DIR)
+
+$(TARGET): main.c $(LIB)
 	$(CC) -o $(TARGET) $(CFLAGS) main.c $(LIB)
+
+$(OUT_DIR):
+	mkdir $(OUT_DIR)
+
+clean:
+	rm -dr out
+	rm $(TARGET)
