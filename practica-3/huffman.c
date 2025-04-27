@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
@@ -6,7 +7,7 @@
 
 void Obtener_Valor(Arbol A, int *cont, HuffmanCode h, Code *table);
 
-Arbol Crear_Nodo(unsigned char c, int f)
+Arbol Crear_Nodo(uint8_t c, int f)
 {
 	Arbol retArbol= malloc(sizeof(struct Nodo));
 	retArbol->c = c;
@@ -16,6 +17,13 @@ Arbol Crear_Nodo(unsigned char c, int f)
 	return retArbol;
 }
 
+bool Es_Hoja(Arbol A)
+{
+	if (A->der == NULL || A->izq == NULL)
+		return true;
+	else
+		return false;
+}
 
 Arbol Comb_Arbol(Arbol A, Arbol B)
 {
@@ -26,61 +34,73 @@ Arbol Comb_Arbol(Arbol A, Arbol B)
 	return retArbol;
 }
 
-/*
-void Print_Arbol(Arbol A, int aux, int length)
+Arbol Construir_Arbol(Arbol *nodos, int numNodos)
 {
-	if (A->der == NULL || A->izq == NULL) {
-		//printf("%c\t --- ", A->c);
-		//printBinary(aux, length);
-		//printf("\n");
-		return;
+	for (int i = 0; i < numNodos - 1; i++) {
+		nodos[i + 1] = Comb_Arbol(nodos[i], nodos[i + 1]);
+		for (int j = i + 1; j < numNodos - 1; j++) {
+			if (nodos[j]->f < nodos[j + 1]->f)
+				break;
+			Arbol temp = nodos[j];
+			nodos[j] = nodos[j + 1];
+			nodos[j + 1] = temp;
+		}
 	}
-	int leftAux = aux;
-	int rightAux = aux;
-	Print_Arbol(A->izq, (leftAux << 1) | 0, length + 1);
-	Print_Arbol(A->der, (rightAux << 1) | 1, length + 1);
+	Arbol retArbol = nodos[numNodos - 1];
+	return retArbol;
 }
-*/
 
-void printBinary(unsigned char *num, int bits) {
+void printBinary(uint8_t *num, int bits) {
     for (int i = 0; i < bits; i++) {
         printf("%d", num[i]);
     }
 }
 
-Code *Obtener_Tabla(Arbol A, int num)
+Code *Obtener_Tabla(Arbol A, int numLeafs)
 {
-	Code *retCode = malloc(num * sizeof(*retCode));
+	Code *retCode = malloc(numLeafs * sizeof(*retCode));
 	int cont = 0;
 	HuffmanCode aux = {.length = 0, .num = NULL};
 	Obtener_Valor(A, &cont, aux, retCode);
 	return retCode;
 }
 
+void printTable(Code *table, int size)
+{
+	for (int i = 0; i < size; i++) {
+		if (isprint(table[i].c)) {
+			printf("'%c' -\t", table[i].c);
+		} else {
+			printf("%d -\t", table[i].c);
+		}
+		printBinary(table[i].h.num, table[i].h.length);
+		printf("\n");
+	}
+}
+
 void Obtener_Valor(Arbol A, int *cont, HuffmanCode h, Code *table)
 {
-	if (A->der == NULL || A->izq == NULL) {
+	if (Es_Hoja(A)) {
 		table[*cont].c = A->c;
 		table[*cont].h = h;
 		(*cont)++;
 		return;
 	}
-	HuffmanCode leftAux = {
-		.length = h.length + 1,
-		.num = malloc(leftAux.length * sizeof(*leftAux.num))};
+	HuffmanCode leftAux;
+	leftAux.length = h.length + 1;
+	leftAux.num = malloc(leftAux.length * sizeof(*leftAux.num));
 	for (int i = 0; i < h.length; i++) { // Copiamos los valores
 		leftAux.num[i] = h.num[i];
 	}
 	leftAux.num[leftAux.length - 1] = 0;
 	Obtener_Valor(A->izq, cont, leftAux, table);
 
-	HuffmanCode rightAux = {
-		.length =h .length + 1,
-		.num = malloc(rightAux.length * sizeof(*rightAux.num))
-		};
+	HuffmanCode rightAux;
+	rightAux.length = h.length + 1;
+	rightAux.num = malloc(rightAux.length * sizeof(*rightAux.num));
 	for (int i = 0; i < h.length; i++) { // Copiamos los valores
 		rightAux.num[i] = h.num[i];
 	}
-	rightAux.num[leftAux.length - 1] = 1;
+	rightAux.num[rightAux.length - 1] = 1;
 	Obtener_Valor(A->der, cont, rightAux, table);
 }

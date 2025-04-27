@@ -1,15 +1,18 @@
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "huffman.h"
+#include "binary.h"
 
 Arbol *get_frequencies(FILE *file, bool isExplicit, int *size);
 void quick_sort(Arbol *array, unsigned int size);
 
 void compressFile(char *fileName);
-void uncompressFile(char *fileName, char *freqFile);
+void uncompressFile(char *fileName, char *freqFileName);
 
 
 int main(int argc, char *argv[])
@@ -27,42 +30,36 @@ int main(int argc, char *argv[])
 void compressFile(char *fileName)
 {
 	FILE *file = fopen(fileName, "r");
-	if(file == NULL) {
+	if (file == NULL) {
 		printf("Error: No se pudo abrir el archivo\n\n");
 		exit(1);
 	}
-	int sizeNodos;
-	Arbol *nodos = get_frequencies(file, false, &sizeNodos);
+	int numNodos;
+	Arbol *nodos = get_frequencies(file, false, &numNodos);
 
 	FILE *freqFile = fopen("frequencias.txt", "w");
-	for (int i = 0; i < sizeNodos; i++) {
-		fprintf(freqFile, "\"%d\"--%d\n", nodos[i]->c, nodos[i]->f);
+	for (int i = 0; i < numNodos; i++) {
+		if (isprint(nodos[i]->c)) {
+			fprintf(freqFile, "'%c'--%d\n", nodos[i]->c, nodos[i]->f);
+		} else {
+			fprintf(freqFile, "%d--%d\n", nodos[i]->c, nodos[i]->f);
+		}
 	}
 	fclose(freqFile);
 
-	for (int i = 0; i < sizeNodos - 1; i++) {
-		nodos[i + 1] = Comb_Arbol(nodos[i], nodos[i + 1]);
-		for (int j = i + 1; j < sizeNodos - 1; j++) {
-			if (nodos[j]->f < nodos[j + 1]->f)
-				break;
-			Arbol temp = nodos[j];
-			nodos[j] = nodos[j + 1];
-			nodos[j + 1] = temp;
-		}
-	}
-	Arbol finalTree = nodos[sizeNodos - 1];
+	Arbol finalTree = Construir_Arbol(nodos, numNodos);
 
-	Code *table = Obtener_Tabla(finalTree, sizeNodos);
+	Code *table = Obtener_Tabla(finalTree, numNodos);
+	printTable(table, numNodos);
 
 	FILE *newFile = fopen("codificacion.dat", "w");
-	unsigned char buffer;
+	uint8_t buffer;
 	rewind(file);
-	unsigned char out = 0;
+	uint8_t out = 0;
 	int bitsPacked = 0;
-	while (fread(&buffer, sizeof(char), 1, file))
-	{
+	while (fread(&buffer, sizeof(buffer), 1, file)) {
 		int tableIndex = 0;
-		for (int i = 0; i < sizeNodos; i++) {
+		for (int i = 0; i < numNodos; i++) {
 			if (buffer == table[i].c) {
 				tableIndex = i;
 				break;
@@ -71,25 +68,62 @@ void compressFile(char *fileName)
 		HuffmanCode currentCode = table[tableIndex].h;
 		for (int i = 0; i < currentCode.length; i++) {
 			if (bitsPacked < 7) {
-				out += currentCode.num[i];
-				out = out << 1;
+				out = push_bin(out, currentCode.num[i]);
 				bitsPacked++;
 			} else if (bitsPacked == 7) {
-				out += currentCode.num[i];
+				out = push_bin(out, currentCode.num[i]);
 				bitsPacked = 0;
-				fwrite(&out, sizeof(char), 1, newFile);
+				fwrite(&out, sizeof(out), 1, newFile);
 				out = 0;
 			}
 		}
 	}
-	out = out << (7 - bitsPacked);
-	fwrite(&out, sizeof(char), 1, newFile);
+	out = out << (8 - bitsPacked);
+	fwrite(&out, sizeof(out), 1, newFile);
 	fclose(newFile);
 }
 
-void uncompressFile(char *fileName, char *freqFile)
+void uncompressFile(char *fileName, char *freqFileName)
 {
-	exit(1);
+	FILE *freqFile = fopen(freqFileName, "r");
+	if (freqFile == NULL) {
+		printf("Error: No se pudo abrir el archivo %s\n\n", freqFileName);
+		exit(1);
+	}
+	int numNodos;
+	Arbol *nodos = get_frequencies(freqFile, true, &numNodos);
+	Arbol finalTree = Construir_Arbol(nodos, numNodos);
+
+	Code *table = Obtener_Tabla(finalTree, numNodos);
+	printTable(table, numNodos);
+
+	FILE *compFile = fopen("codificacion.dat", "r");
+	FILE *newFile = fopen("out.file", "w");
+	int bitsRead = 0;
+	int i;
+	Arbol auxArbol = finalTree;
+	uint8_t buffer;
+	fread(&buffer, sizeof(buffer), 1, compFile);
+	while (true) {
+		if (bitsRead > 7) {
+			if (fread(&buffer, sizeof(buffer), 1, compFile) != 1)
+				break;
+			bitsRead = 0;
+		}
+		int bit = get_bit(buffer, 7 - bitsRead);
+		bitsRead++;
+		if (bit == 0) {
+			auxArbol = auxArbol->izq;
+		} else {
+			auxArbol = auxArbol->der;
+		}
+		if (Es_Hoja(auxArbol)) {
+			fwrite(&auxArbol->c, sizeof(auxArbol->c), 1, newFile);
+			auxArbol = finalTree;
+		}
+	}
+	fclose(compFile);
+	fclose(newFile);
 }
 
 
@@ -97,15 +131,26 @@ Arbol *get_frequencies(FILE *file, bool isExplicit, int *size)
 {
 	Arbol *frequency = malloc(256 * sizeof(*frequency));
 	if (isExplicit) {
-		printf("POR IMPLEMENTAR\n");
-		exit(1);
+		uint8_t buffer[60];
+		int i = 0;
+		while (fgets((char *)buffer, 50, file) != NULL && i < 256) {
+			uint8_t c;
+			int f;
+			if (buffer[0] == '\'')
+				sscanf((char *)buffer, "'%c'--%d", &c, &f);
+			else
+				sscanf((char *)buffer, "%hhd--%d", &c, &f);
+			frequency[i] = Crear_Nodo(c, f);
+			i++;
+		}
+		*size = i;
+		return frequency;
 	}
 	for (int i = 0; i < 256; i++) {
 		frequency[i] = Crear_Nodo(i, 0);
 	}
-	unsigned char buffer;
-	while (fread(&buffer, sizeof(char), 1, file) == 1)
-	{
+	uint8_t buffer;
+	while (fread(&buffer, sizeof(buffer), 1, file) == 1) {
 		frequency[buffer]->f++;
 	}
 	quick_sort(frequency, 256);
@@ -120,6 +165,7 @@ Arbol *get_frequencies(FILE *file, bool isExplicit, int *size)
 		*size = nonZeroItems;
 		return &(frequency[i]);
 	}
+	return NULL;
 }
 
 
