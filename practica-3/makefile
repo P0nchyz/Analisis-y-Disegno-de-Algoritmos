@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Library files
-LIB = huffman.c
+LIB = huffman.c binary.c
 
 # Output executable name
 TARGET = huffman.out
