@@ -156,7 +156,7 @@ void compressFile(char *fileName)
 
 	Code *table = Obtener_Tabla(finalTree, numNodos); //< Tabla con los caracteres y sus codigos de huffman
 	
-	// printTable(table, numNodos); // FOR DEBUGGING
+	printTable(table, numNodos); // FOR DEBUGGING
 
 	FILE *newFile = fopen("./out/codificacion.dat", "w"); //< Archivo que contendra la codificacion binaria
 	uint8_t buffer; //< Espacio para guardar un byte de memoria al leer
@@ -165,6 +165,7 @@ void compressFile(char *fileName)
 	uint8_t out = 0; //< Espacio de un byte que guardaremos en el archivo de salida
 	int bitsPacked = 0; //< Numero de bits que hemos guardado en el byte out
 
+	fwrite(&out, sizeof(out), 1, newFile);
 	// El loop correra mientras podamos leer bytes del archivo de entrada
 	while (fread(&buffer, sizeof(buffer), 1, file)) { // Leemos un byte del archivo a la vez
 		int tableIndex = 0; //< Posicion en la tabla en la que se encuentra el byte que leimos
@@ -200,6 +201,8 @@ void compressFile(char *fileName)
 	// Recorremos los bits del ultimo byte a escribir hasta que queden contiguos con el resto
 	out = out << (8 - bitsPacked);
 	fwrite(&out, sizeof(out), 1, newFile);
+	rewind(newFile);
+	fwrite(&bitsPacked, 1, 1, newFile);
 	fclose(newFile);
 }
 
@@ -229,7 +232,7 @@ void uncompressFile(char *fileName, char *freqFileName)
 
 	Code *table = Obtener_Tabla(finalTree, numNodos); //< Tabla con los caracteres y sus codigos huffman
 
-	// printTable(table, numNodos); // FOR DEBUGGING
+	printTable(table, numNodos); // FOR DEBUGGING
 
 	FILE *compFile = fopen("./out/codificacion.dat", "r"); //< Archivo con la codificacion en binario
 	FILE *newFile = fopen("./out/out.file", "w"); //< Archivo de salida con los datos del archivo original
@@ -237,15 +240,26 @@ void uncompressFile(char *fileName, char *freqFileName)
 	Arbol auxArbol = finalTree; //< Arbol auxilar con la posicion a la que hemos traversado
 	uint8_t buffer; //< Espacio para guardar un byte de memoria al leer
 	
+	uint8_t lastBits;
+	fread(&lastBits, sizeof(lastBits), 1, compFile);
 	// Leemos el primer byte del archivo
 	fread(&buffer, sizeof(buffer), 1, compFile);
 	// Loop infinito con condiciones de salida internas
+	int reachedEOF = 1;
 	while (true) { 
 		if (bitsRead > 7) {
+			print_uint8_b(buffer);
+			if (reachedEOF != 1)
+				break;
 			// Si ya leimos los 8 bits del buffer leemos otro
-			if (fread(&buffer, sizeof(buffer), 1, compFile) != 1)
-				break; // Si ya no es posible leer otro byte salimos del loop
-			bitsRead = 0; // Si fue posible leer otro byte reiniciamos cuantos bits hemos leido
+			fread(&buffer, sizeof(buffer), 1, compFile);
+			uint8_t nextBuff;
+			reachedEOF = fread(&nextBuff, sizeof(nextBuff), 1, compFile);
+			fseek(compFile, -1, SEEK_CUR);
+			if (reachedEOF != 1) {
+				bitsRead = 8 - lastBits;
+			} else
+				bitsRead = 0;
 		}
 		int bit = get_bit(buffer, 7 - bitsRead); //< Leemos bit por bit
 		bitsRead++;
