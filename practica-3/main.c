@@ -184,6 +184,7 @@ int main(int argc, char *argv[])
  */
 void compressFile(char *fileName)
 {
+	clock_t inicio = clock();
 	FILE *file = fopen(fileName, "r"); //< Archivo de entrada a codificar
 	if (file == NULL) {
 		printf("Error: No se pudo abrir el archivo %s\n\n", fileName);
@@ -260,6 +261,10 @@ void compressFile(char *fileName)
 	fclose(newFile);
 
 	mostrarDetalles(fileName, "./out/codificacion.dat");
+
+	clock_t fin = clock();
+        double tiempo = (double)(fin - inicio) / CLOCKS_PER_SEC;
+        printf("Tiempo de ejecucion: %.4f segundos\n", tiempo);
 }
 
 /**
