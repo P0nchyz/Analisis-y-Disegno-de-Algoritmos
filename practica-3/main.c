@@ -156,7 +156,7 @@ void compressFile(char *fileName)
 
 	Code *table = Obtener_Tabla(finalTree, numNodos); //< Tabla con los caracteres y sus codigos de huffman
 	
-	printTable(table, numNodos); // FOR DEBUGGING
+	// printTable(table, numNodos); // FOR DEBUGGING
 
 	FILE *newFile = fopen("./out/codificacion.dat", "w"); //< Archivo que contendra la codificacion binaria
 	uint8_t buffer; //< Espacio para guardar un byte de memoria al leer
@@ -230,9 +230,9 @@ void uncompressFile(char *fileName, char *freqFileName)
 
 	Arbol finalTree = Construir_Arbol(nodos, numNodos); //< El arbol ya formado con los bytes y sus frecuencias
 
-	Code *table = Obtener_Tabla(finalTree, numNodos); //< Tabla con los caracteres y sus codigos huffman
+	// Code *table = Obtener_Tabla(finalTree, numNodos); //< Tabla con los caracteres y sus codigos huffman
 
-	printTable(table, numNodos); // FOR DEBUGGING
+	// printTable(table, numNodos); // FOR DEBUGGING
 
 	FILE *compFile = fopen("./out/codificacion.dat", "r"); //< Archivo con la codificacion en binario
 	FILE *newFile = fopen("./out/out.file", "w"); //< Archivo de salida con los datos del archivo original
@@ -248,7 +248,6 @@ void uncompressFile(char *fileName, char *freqFileName)
 	int reachedEOF = 1;
 	while (true) { 
 		if (bitsRead > 7) {
-			print_uint8_b(buffer);
 			if (reachedEOF != 1)
 				break;
 			// Si ya leimos los 8 bits del buffer leemos otro
@@ -257,6 +256,7 @@ void uncompressFile(char *fileName, char *freqFileName)
 			reachedEOF = fread(&nextBuff, sizeof(nextBuff), 1, compFile);
 			fseek(compFile, -1, SEEK_CUR);
 			if (reachedEOF != 1) {
+				buffer = buffer >> (8 - lastBits);
 				bitsRead = 8 - lastBits;
 			} else
 				bitsRead = 0;
