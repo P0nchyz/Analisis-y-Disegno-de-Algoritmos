@@ -45,6 +45,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 // Libreria para la creación y manejo de arboles, codigos de huffman y
 // tablas de frecuencias
@@ -107,6 +108,9 @@ void quick_sort(Arbol *array, unsigned int size);
     long tamCodificado = ftell(cod);
     rewind(cod);
 
+    const char *ext = strrchr(original, '.'); //Da la extensión del archivo 
+    if (ext) ext++; // Saltamos el punto
+
     // Leer primer byte: bits válidos en el último byte
     uint8_t bitsUltimo;
     fread(&bitsUltimo, sizeof(uint8_t), 1, cod);
@@ -117,6 +121,8 @@ void quick_sort(Arbol *array, unsigned int size);
     double compresion = 100.0 * (1.0 - ((double)tamCodificado / (double)tamOriginal));
 
     printf("\n**** Detalles de Compresion ****\n");
+    printf("Archivo original: %s\n", original);
+    printf("Tipo de archivo: %s\n", (ext ? ext : "Desconocido"));
     printf("Tam original     : %ld bytes\n", tamOriginal);
     printf("Tam codificado   : %ld bytes\n", tamCodificado);
     printf("Compresion alcanzada: %.2f%%\n", compresion);
