@@ -52,6 +52,8 @@
 // Libreria para el manejo de bits en tipo de dato uint8_t
 #include "lib/binary.h"
 
+#include "lib/tiempo.h"
+
 /**
  * @brief Obtiene la frecuencia de los caracteres en un archivo
  * 
@@ -107,10 +109,57 @@ void uncompressFile(char *fileName, char *freqFileName);
 
 int main(int argc, char *argv[])
 {
+	double utime0, stime0, wtime0, utime1, stime1, wtime1;
 	if (argc == 2) {
+		uswtime(&utime0, &stime0, &wtime0);
 		compressFile(argv[1]);
+		uswtime(&utime1, &stime1, &wtime1);
+
+		FILE *compFile = fopen(argv[1], "r");
+		fseek(compFile, 0, SEEK_END);
+		uint64_t compFileSize = ftell(compFile);
+		fclose(compFile);
+
+		FILE *newFile = fopen("out/codificacion.dat", "r");
+		fseek(newFile, 0, SEEK_END);
+		uint64_t newFileSize = ftell(newFile);
+		fclose(newFile);
+
+		printf("Archivo de entrada: %s -- %lu bytes\n", argv[1], compFileSize);
+		printf("Archivo de Salida: %s -- %lu bytes\n", "./out/codificacion.dat", newFileSize);
+		printf("Compresion del %.2lf%%\n", 100 * (1 - (double) newFileSize / compFileSize));
+	
+		printf("\n");
+		printf("real (Tiempo total)  %.10f s\n",  wtime1 - wtime0);
+		printf("user (Tiempo de procesamiento en CPU) %.10f s\n",  utime1 - utime0);
+		printf("sys (Tiempo en acciónes de E/S)  %.10f s\n",  stime1 - stime0);
+		printf("CPU/Wall   %.10f %% \n",100.0 * (utime1 - utime0 + stime1 - stime0) / (wtime1 - wtime0));
+		printf("\n");
+
 	} else if (argc == 3) {
+		uswtime(&utime0, &stime0, &wtime0);
 		uncompressFile(argv[1], argv[2]);
+		uswtime(&utime1, &stime1, &wtime1);
+
+		FILE *compFile = fopen(argv[1], "r");
+		fseek(compFile, 0, SEEK_END);
+		uint64_t compFileSize = ftell(compFile);
+		fclose(compFile);
+
+		FILE *newFile = fopen("out/out.file", "r");
+		fseek(newFile, 0, SEEK_END);
+		uint64_t newFileSize = ftell(newFile);
+		fclose(newFile);
+
+		printf("Archivo de entrada: %s -- %lu bytes\n", argv[1], compFileSize);
+		printf("Archivo de Salida: %s -- %lu bytes\n", "./out/out.file", newFileSize);
+	
+		printf("\n");
+		printf("real (Tiempo total)  %.10f s\n",  wtime1 - wtime0);
+		printf("user (Tiempo de procesamiento en CPU) %.10f s\n",  utime1 - utime0);
+		printf("sys (Tiempo en acciónes de E/S)  %.10f s\n",  stime1 - stime0);
+		printf("CPU/Wall   %.10f %% \n",100.0 * (utime1 - utime0 + stime1 - stime0) / (wtime1 - wtime0));
+		printf("\n");
 	} else {
 		printf("BAD ARGUMENTS.\n");
 		exit(1);
