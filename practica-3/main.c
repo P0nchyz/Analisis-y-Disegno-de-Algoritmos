@@ -76,6 +76,54 @@ Arbol *get_frequencies(FILE *file, bool isExplicit, int *size);
  * @param size Numero de Arboles en el arreglo
  */
 void quick_sort(Arbol *array, unsigned int size);
+/**
+ * @brief Muestra los detalles de la compresión
+ *
+ * Calcula y muestra:
+ * - Tamaño del archivo original (en bytes)
+ * - Tamaño del archivo codificado (en bytes)
+ * - Nivel de compresión (porcentaje)
+ * - Total de bits codificados (sin contar la tabla de frecuencias)
+ *
+ * @param original Nombre del archivo original
+ * @param codificado Nombre del archivo codificado
+ */
+ void mostrarDetalles(char *original, char *codificado) {
+    FILE *orig = fopen(original, "rb");
+    FILE *cod = fopen(codificado, "rb");
+
+    if (!orig || !cod) {
+        printf("Error: no se pudieron abrir los archivos para obtener detalles.\n");
+        if (orig) fclose(orig);
+        if (cod) fclose(cod);
+        return;
+    }
+
+    fseek(orig, 0, SEEK_END);
+    long tamOriginal = ftell(orig);
+    fclose(orig);
+
+    fseek(cod, 0, SEEK_END);
+    long tamCodificado = ftell(cod);
+    rewind(cod);
+
+    // Leer primer byte: bits válidos en el último byte
+    uint8_t bitsUltimo;
+    fread(&bitsUltimo, sizeof(uint8_t), 1, cod);
+    long totalBits = (tamCodificado - 1) * 8 - (8 - bitsUltimo);  // -1 por el byte inicial
+
+    fclose(cod);
+
+    double compresion = 100.0 * (1.0 - ((double)tamCodificado / (double)tamOriginal));
+
+    printf("\n**** Detalles de Compresion ****\n");
+    printf("Tam original     : %ld bytes\n", tamOriginal);
+    printf("Tam codificado   : %ld bytes\n", tamCodificado);
+    printf("Compresion alcanzada: %.2f%%\n", compresion);
+    printf("Bits codificados    : %ld bits\n", totalBits);
+    printf("*******************************\n");
+}
+
 
 /**
  * @brief Codifica el archivo utilizando el algoritmo de huffman
@@ -204,6 +252,8 @@ void compressFile(char *fileName)
 	rewind(newFile);
 	fwrite(&bitsPacked, 1, 1, newFile);
 	fclose(newFile);
+
+	mostrarDetalles(fileName, "./out/codificacion.dat");
 }
 
 /**
